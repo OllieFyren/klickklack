@@ -41,11 +41,29 @@ function startTimer(): void {
     }, 100)
 }
 
+function startGame(): void {
+    const countdown = document.createElement('div');
+    countdown.id = "countdown";
+    countdown.textContent = "3";
+    document.getElementById("board").appendChild(countdown);
+    let count = 3;
+    const countdownInterval = setInterval(() => {
+        count--;
+        countdown.textContent = count.toString();
+        if (count === 0) {
+            clearInterval(countdownInterval);
+            countdown.textContent = "GO!";
+            startTimer();
+            activateSquares(boardSize, 2, excluded);
+            countdown.classList.add('fade');
+            setTimeout(() => {
+                countdown.remove();
+            }, 1000);
+        }
+    }, 1000);
+}
+
 function squareClick(square): void {
-    if (state === "paused") {
-        state = "running";
-        startTimer();
-    }
     document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
     if (square.classList.contains('active')) {
         square.classList.remove('active');
@@ -60,8 +78,8 @@ function squareClick(square): void {
 }
 
 function endGame(): void {
-    buildEndGameScreen();
     resetGameValues();
+    buildEndGameScreen();
 }
 
 function increaseScore(): void {

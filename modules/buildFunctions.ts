@@ -95,7 +95,7 @@ function buildBoard(difficulty): void {
         })
     })
     //Set initial active squares
-    activateSquares(boardSize, 2, excluded);
+    startGame();
 }
 
 function buildEndGameScreen(): void {
@@ -143,7 +143,7 @@ function buildEndGameScreen(): void {
 
     retry.addEventListener('click', () => {
         endScreen.remove();
-        activateSquares(boardSize, 2, excluded);
+        startGame();
     })
 
     back.addEventListener('click', () => {
