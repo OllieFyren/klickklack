@@ -1,7 +1,16 @@
-(function() {
-    const app = document.getElementById("app");
+const app = document.getElementById("app");
 
-    //Create start menu
+//Globally scoped vars
+let boardSize = 0;
+let excluded: number[] = [];
+let score = 500;
+let state = "paused";
+let totalScore = 0;
+let combo = 0;
+let timer: ReturnType<typeof setInterval>;
+
+//Create start screen
+(() => {
     const start = document.createElement('div');
     start.id = 'startMenu';
     const play = document.createElement('div');
@@ -12,23 +21,14 @@
     start.appendChild(play);
     app.appendChild(start);
 
-    //Game options menu
-    const options = document.createElement('div')
-
-    const difficulties : string[] = ["easy", "medium", "hard", "custom"];
-    difficulties.forEach((difficulty) => {
-        const button = document.createElement('div');
-        const text = document.createElement('p');
-        text.textContent = difficulty;
-        button.appendChild(text);
-        button.dataset.difficulty = difficulty;
-        button.classList.add('button')
-        options.appendChild(button);
+    //Click functionality
+    play.addEventListener('click', () => {
+        buildOptions();
+        play.classList.add('clicked');
+        const start = document.getElementById('startMenu');
+        start.style.height = "0";
+        setTimeout(() => {
+            start.remove();
+        }, 1000)
     })
-    app.appendChild(options);
 })();
-
-
-document.getElementById('playButton').onclick = (event) => {
-    console.log
-}

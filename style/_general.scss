@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  background-color: $accLight;
+  font-family: "DynaPuff", system-ui;
+  font-optical-sizing: auto;
+  #app {
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+}

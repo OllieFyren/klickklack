@@ -1,0 +1,44 @@
+#startMenu {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: height 500ms;
+  transition-delay: 500ms;
+  #playButton {
+    background-color: $secLight;
+    padding: 15px 50px;
+    border-radius: 10px;
+    animation: buttonAnimation 1.5s alternate infinite cubic-bezier(0.9, 0.7, 0.7, 0.9);
+    cursor: pointer;
+    transition: all 500ms;
+    opacity: 1;
+    p {
+      margin: 0;
+      font-size: 40px;
+      color: white;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+  #playButton.clicked {
+    scale: 1.4;
+    opacity: 0;
+  }
+}
+
+@keyframes buttonAnimation {
+  0% {
+    transform: rotate(10deg);
+    scale: 1.1;
+  }
+  50% {
+    transform: rotate(0deg);
+    scale: 0.9;
+  }
+  100% {
+    transform: rotate(-10deg);
+    scale: 1.1;
+  }
+}

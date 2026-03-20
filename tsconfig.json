@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "outFile": "index.js",
+    "lib": [
+      "es2016",
+      "dom"
+    ]
+  },
+  "files": [
+    "index.ts",
+    "modules/buildFunctions.ts",
+    "modules/gameFunctions.ts",
+  ]
+}
