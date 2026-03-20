@@ -45,6 +45,14 @@ function buildBoard(difficulty): void {
     scoreContainer.appendChild(score);
     boardContainer.appendChild(scoreContainer);
 
+    //timer display
+    const timerContainer = document.createElement('div');
+    timerContainer.id = "timer";
+    const timerBar = document.createElement('div');
+    timerBar.id = "timerBar";
+    timerContainer.appendChild(timerBar);
+    boardContainer.appendChild(timerContainer);
+
     //Board
     const board = document.createElement('div');
     board.id = "board";

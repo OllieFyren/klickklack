@@ -28,7 +28,12 @@ function startTimer(): void {
     timer = setInterval(() => {
         if (score > 0) {
             score = score - 100;
-            console.log(score);
+            document.getElementById("timerBar").style.width = `${score / 5}%`;
+            if (score < 100) {
+                document.getElementById("timerBar").style.backgroundColor = "red";
+            } else if (score < 300) {
+                document.getElementById("timerBar").style.backgroundColor = "orange";
+            }
         } else {
             combo = 0;
             endGame();
@@ -41,6 +46,7 @@ function squareClick(square): void {
         state = "running";
         startTimer();
     }
+    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
     if (square.classList.contains('active')) {
         square.classList.remove('active');
         const squareNum: number = parseInt(square.dataset.i);
@@ -80,6 +86,8 @@ function resetGameValues(): void {
     document.querySelectorAll('.boardSquare.active').forEach((square) => {
         square.classList.remove('active');
     })
+    document.getElementById("timerBar").style.width = "100%";
+    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
 }
 
 function backToMenu(): void {

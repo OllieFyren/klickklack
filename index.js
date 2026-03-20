@@ -72,6 +72,13 @@ function buildBoard(difficulty) {
     score.textContent = "0";
     scoreContainer.appendChild(score);
     boardContainer.appendChild(scoreContainer);
+    //timer display
+    var timerContainer = document.createElement('div');
+    timerContainer.id = "timer";
+    var timerBar = document.createElement('div');
+    timerBar.id = "timerBar";
+    timerContainer.appendChild(timerBar);
+    boardContainer.appendChild(timerContainer);
     //Board
     var board = document.createElement('div');
     board.id = "board";
@@ -190,7 +197,13 @@ function startTimer() {
     timer = setInterval(function () {
         if (score > 0) {
             score = score - 100;
-            console.log(score);
+            document.getElementById("timerBar").style.width = "".concat(score / 5, "%");
+            if (score < 100) {
+                document.getElementById("timerBar").style.backgroundColor = "red";
+            }
+            else if (score < 300) {
+                document.getElementById("timerBar").style.backgroundColor = "orange";
+            }
         }
         else {
             combo = 0;
@@ -203,6 +216,7 @@ function squareClick(square) {
         state = "running";
         startTimer();
     }
+    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
     if (square.classList.contains('active')) {
         square.classList.remove('active');
         var squareNum_1 = parseInt(square.dataset.i);
@@ -240,6 +254,8 @@ function resetGameValues() {
     document.querySelectorAll('.boardSquare.active').forEach(function (square) {
         square.classList.remove('active');
     });
+    document.getElementById("timerBar").style.width = "100%";
+    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
 }
 function backToMenu() {
     resetGameValues();
