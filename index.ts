@@ -2,12 +2,15 @@ const app = document.getElementById("app");
 
 //Globally scoped vars
 let boardSize = 0;
+let difficulty: string;
+let gameMode: string;
 let excluded: number[] = [];
-let score = 500;
+let score = 0;
 let state = "paused";
 let totalScore = 0;
 let combo = 0;
 let timer: ReturnType<typeof setInterval>;
+let timeLimit: number;
 
 //Create start screen
 (() => {

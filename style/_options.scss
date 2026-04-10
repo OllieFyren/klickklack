@@ -31,15 +31,3 @@
     scale: 1.6;
   }
 }
-
-@keyframes hoverAnimation {
-  0% {
-    rotate: 2deg;
-  }
-  50% {
-    rotate: 0deg;
-  }
-  100% {
-    rotate: -2deg;
-  }
-}

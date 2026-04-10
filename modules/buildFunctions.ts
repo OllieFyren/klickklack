@@ -18,13 +18,58 @@ function buildOptions(): void {
             const options = document.getElementById('options');
             button.classList.add('chosen');
             options.style.opacity = "0";
-            const difficulty = button.getAttribute('data-difficulty');
+            difficulty = button.getAttribute('data-difficulty');
             setTimeout(() => {
                 options.remove();
-                buildBoard(difficulty);
+                buildGameModeSelect();
             }, 800)
         })
     });
+}
+
+function buildGameModeSelect(): void {
+    const gameModeSelect = document.createElement('div');
+    gameModeSelect.id = 'gameModeSelect';
+
+    const timedMode = document.createElement('div');
+    timedMode.id = 'timed';
+    timedMode.classList.add('modeButton');
+    timedMode.dataset.mode = "timed";
+    const timedIcon = document.createElement('img');
+    timedIcon.src = "../icons/timed.svg";
+    const timedText = document.createElement('p');
+    timedText.textContent = "Time attack";
+    timedMode.appendChild(timedIcon);
+    timedMode.appendChild(timedText);
+
+    const infiniteMode = document.createElement('div');
+    infiniteMode.id = 'infinite';
+    infiniteMode.classList.add('modeButton');
+    infiniteMode.dataset.mode = "infinite";
+    const infiniteIcon = document.createElement('img');
+    infiniteIcon.src = "../icons/infinity.svg";
+    const infiniteText = document.createElement('p');
+    infiniteText.textContent = "Infinite";
+    infiniteMode.appendChild(infiniteIcon);
+    infiniteMode.appendChild(infiniteText);
+    gameModeSelect.appendChild(timedMode);
+    gameModeSelect.appendChild(infiniteMode);
+
+    app.appendChild(gameModeSelect);
+
+    //Add event listener only after element exists
+    document.querySelectorAll('.modeButton').forEach((button) => {
+        button.addEventListener('click', () => {
+            const gameModeSelect = document.getElementById('gameModeSelect');
+            button.classList.add('chosen');
+            gameMode = button.getAttribute('data-mode');
+            gameModeSelect.style.opacity = "0";
+            setTimeout(() => {
+                gameModeSelect.remove();
+                buildBoard(difficulty);
+            }, 800)
+        })
+    })
 }
 
 function buildBoard(difficulty): void {
@@ -45,13 +90,22 @@ function buildBoard(difficulty): void {
     scoreContainer.appendChild(score);
     boardContainer.appendChild(scoreContainer);
 
-    //timer display
-    const timerContainer = document.createElement('div');
-    timerContainer.id = "timer";
-    const timerBar = document.createElement('div');
-    timerBar.id = "timerBar";
-    timerContainer.appendChild(timerBar);
-    boardContainer.appendChild(timerContainer);
+    //timer display if infinite game mode
+    if(gameMode === "infinite") {
+        const timerContainer = document.createElement('div');
+        timerContainer.id = "timer";
+        const timerBar = document.createElement('div');
+        timerBar.id = "timerBar";
+        timerContainer.appendChild(timerBar);
+        boardContainer.appendChild(timerContainer);
+    } else if(gameMode === "timed") {
+        const timeLimit = document.createElement('div');
+        timeLimit.id = "timeLimit";
+        const timeLimitBar = document.createElement('div');
+        timeLimitBar.id = "timeLimitBar";
+        timeLimit.appendChild(timeLimitBar);
+        boardContainer.appendChild(timeLimit);
+    }
 
     //Board
     const board = document.createElement('div');
@@ -88,17 +142,28 @@ function buildBoard(difficulty): void {
     boardContainer.appendChild(board);
     app.appendChild(boardContainer);
 
+    //Combo display
+    if(gameMode === "timed"){
+        const comboDisplay = document.createElement('div');
+        comboDisplay.id = "comboDisplay";
+        const combo = document.createElement('p');
+        combo.id = "combo";
+        combo.textContent = "x0";
+        comboDisplay.appendChild(combo);
+        boardContainer.appendChild(comboDisplay);
+    }
+    
     //Click event after creation
     document.querySelectorAll('.boardSquare').forEach((square) => {
-        square.addEventListener('click', () => {
-            squareClick(square);
+        square.addEventListener('click', (event: Event) => {
+            squareClick(square, event);
         })
     })
     //Set initial active squares
     startGame();
 }
 
-function buildEndGameScreen(): void {
+function buildEndGameScreen(gameMode): void {
     //Create containers
     const endScreen = document.createElement('div');
     endScreen.id = "endScreen";
@@ -119,7 +184,11 @@ function buildEndGameScreen(): void {
 
     //Game over text
     const gameOverText = document.createElement('h2');
-    gameOverText.textContent = "Game over!";
+    if(gameMode === "infinite") {
+        gameOverText.textContent = "Game over!";
+    } else if(gameMode === "timed") {
+        gameOverText.textContent = "Time's up!";
+    }
     gameOverText.classList.add('endText');
     innerEndScreen.appendChild(gameOverText);
 

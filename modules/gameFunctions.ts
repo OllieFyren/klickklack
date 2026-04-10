@@ -35,55 +35,137 @@ function startTimer(): void {
                 document.getElementById("timerBar").style.backgroundColor = "orange";
             }
         } else {
-            combo = 0;
             endGame();
         }
     }, 100)
+}
+
+function startTimeLimit(): void {
+    timeLimit = 30;
+    timer = setInterval(() => {
+        console.log(timeLimit);
+        timeLimit = timeLimit - 1;
+        document.getElementById("timeLimitBar").style.width = `${timeLimit / 30 * 100}%`;
+        if (timeLimit < 10) {
+            document.getElementById("timeLimitBar").style.backgroundColor = "red";
+        } else if (timeLimit < 20) {
+            document.getElementById("timeLimitBar").style.backgroundColor = "orange";
+        } else {
+            document.getElementById("timeLimitBar").style.backgroundColor = "#7DCD85";
+        }
+        if (timeLimit === 0) {
+            endGame();
+        }
+    }, 1000)
 }
 
 function startGame(): void {
     const countdown = document.createElement('div');
     countdown.id = "countdown";
     countdown.textContent = "3";
-    document.getElementById("board").appendChild(countdown);
-    let count = 3;
-    const countdownInterval = setInterval(() => {
-        count--;
-        countdown.textContent = count.toString();
-        if (count === 0) {
-            clearInterval(countdownInterval);
-            countdown.textContent = "GO!";
-            startTimer();
-            activateSquares(boardSize, 2, excluded);
-            countdown.classList.add('fade');
-            setTimeout(() => {
-                countdown.remove();
-            }, 1000);
-        }
-    }, 1000);
-}
-
-function squareClick(square): void {
-    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
-    if (square.classList.contains('active')) {
-        square.classList.remove('active');
-        const squareNum: number = parseInt(square.dataset.i);
-        activateSquares(boardSize, 1, excluded);
-        excluded = excluded.filter(value => value !== squareNum);
-        increaseScore();
+    if (gameMode === "infinite") {
         score = 500;
-    } else {
-        endGame();
+        activateSquares(boardSize, 2, excluded);
+    } else if (gameMode === "timed") {
+        document.getElementById("board").appendChild(countdown);
+        score = 10;
+        let count = 3;
+        const countdownInterval = setInterval(() => {
+            count--;
+            countdown.textContent = count.toString();
+            if (count === 0) {
+                clearInterval(countdownInterval);
+                countdown.textContent = "GO!";
+                activateSquares(boardSize, 2, excluded);
+                countdown.classList.add('fade');
+                setTimeout(() => {
+                    countdown.remove();
+                }, 1000);
+            } else if (count === 1) {
+                startTimeLimit();
+            }
+        }, 1000);
     }
 }
 
+function squareClick(square, e): void {
+    if (gameMode === "infinite") {
+        document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
+        if (state === "paused") {
+            state = "playing";
+            startTimer();
+        }
+        if (square.classList.contains('active')) {
+            square.classList.remove('active');
+            showCircle(square, e);
+            const squareNum: number = parseInt(square.dataset.i);
+            activateSquares(boardSize, 1, excluded);
+            excluded = excluded.filter(value => value !== squareNum);
+            increaseScore();
+            score = 500;
+        } else {
+            endGame();
+        }
+    } else if (gameMode === "timed") {
+        if (square.classList.contains('active')) {
+            square.classList.remove('active');
+            showCircle(square, e);
+            const squareNum: number = parseInt(square.dataset.i);
+            activateSquares(boardSize, 1, excluded);
+            excluded = excluded.filter(value => value !== squareNum);
+            increaseScore();
+        } else {
+            combo = 0;
+            showCross(square, e);
+            document.getElementById("combo").textContent = "x0";
+        }
+    }
+}
+
+function showCircle(square, event): void {
+    const circle = document.createElement('div');
+    const rect = square.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    circle.style.left = x + 'px';
+    circle.style.top = y + 'px';
+    circle.classList.add('circle');
+    square.appendChild(circle);
+    const circleContent = document.createElement('div');
+    circleContent.classList.add('circleContent');
+    circle.appendChild(circleContent);
+    setTimeout(() => {
+        circle.remove();
+    }, 500);
+}
+
+function showCross(square, event): void {
+    const cross = document.createElement('div');
+    const rect = square.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    cross.style.left = x + 'px';
+    cross.style.top = y + 'px';
+    cross.classList.add('cross');
+    square.appendChild(cross);
+    const crossContent = document.createElement('p');
+    crossContent.classList.add('crossContent');
+    crossContent.textContent = "+";
+    cross.appendChild(crossContent);
+
+    setTimeout(() => {
+        cross.remove();
+    }, 500);
+}
+
 function endGame(): void {
+    buildEndGameScreen(gameMode);
     resetGameValues();
-    buildEndGameScreen();
 }
 
 function increaseScore(): void {
     combo++;
+    document.getElementById("combo").textContent = "x" + combo;
     const increase = score * combo;
     totalScore = totalScore + increase;
     const display = document.createElement("p");
@@ -104,8 +186,14 @@ function resetGameValues(): void {
     document.querySelectorAll('.boardSquare.active').forEach((square) => {
         square.classList.remove('active');
     })
-    document.getElementById("timerBar").style.width = "100%";
-    document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
+    if(document.getElementById("timerBar")) {
+        document.getElementById("timerBar").style.width = "100%";
+        document.getElementById("timerBar").style.backgroundColor = "#7DCD85";
+    }
+    if(document.getElementById("timeLimitBar")) {
+        document.getElementById("timeLimitBar").style.width = "100%";
+        document.getElementById("timeLimitBar").style.backgroundColor = "#7DCD85";
+    }
 }
 
 function backToMenu(): void {

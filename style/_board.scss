@@ -24,17 +24,26 @@
     }
   }
 
-  #timer {
+  #timer,
+  #timeLimit {
     width: 100%;
     max-width: 500px;
     height: 10px;
 
-    #timerBar {
+    #timerBar,
+    #timeLimitBar {
       width: 100%;
       height: 100%;
       background-color: #7DCD85;
       border-radius: 5px;
+    }
+
+    #timerBar {
       transition: width 100ms linear, background-color 100ms linear;
+    }
+
+    #timeLimitBar {
+      transition: width 1000ms linear, background-color 1000ms linear;
     }
   }
 
@@ -44,14 +53,48 @@
     aspect-ratio: 1/1;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
     position: relative;
+    border: 2px solid white;
+    border-radius: 5px;
 
     .boardSquare {
       border-radius: 5px;
       aspect-ratio: 1/1;
-      width: calc((100% / var(--rows)) - (((var(--rows) - 1) * 6px) / var(--rows)));
-      background-color: red;
+      width: calc((100% / var(--rows)));
+      position: relative;
+
+      .circle {
+        pointer-events: none;
+        position: absolute;
+        animation: circleAnimation 500ms linear forwards;
+
+        .circleContent {
+          border: 3px solid white;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          position: relative;
+          left: -9px;
+          top: -8px;
+        }
+      }
+
+      .cross {
+        pointer-events: none;
+        position: absolute;
+
+        animation: circleAnimation 500ms linear forwards;
+        .crossContent {
+          font-size: 40px;
+          color: red;
+          font-weight: bold;
+          rotate: 45deg;
+          position: relative;
+          left: -7px;
+          top: -25px;
+          margin: 0;
+        }
+      }
     }
 
     .boardSquare.active {
@@ -65,7 +108,6 @@
       height: 100%;
       padding: 20px;
       box-sizing: border-box;
-      background-color: rgba(0, 0, 0, 0.1);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -140,6 +182,20 @@
   }
 }
 
+#comboDisplay {
+  color: white;
+  max-width: 500px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  #combo {
+    text-align: right;
+    margin: 0;
+    font-size: 30px;
+  }
+}
+
 @keyframes scoreIncreaseAnimation {
   0% {
     opacity: 1;
@@ -154,5 +210,45 @@
   100% {
     opacity: 0;
     top: -60px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  #boardContainer {
+    #board {
+      #endScreen {
+        #innerEndScreen {
+          #finalScore {
+            p {
+              margin-top: 0;
+            }
+
+            h3 {
+              margin-top: 10px;
+              margin-bottom: 0;
+              font-size: 20px;
+            }
+          }
+
+          .endText {
+            font-size: 25px;
+          }
+
+          #endButtons {
+            gap: 15px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes circleAnimation {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }

@@ -10,8 +10,22 @@ $sec: #80AB82;
 $secLight: #7DCD85;
 $secDark: #778472;
 
+//animations
+@keyframes hoverAnimation {
+  0% {
+    rotate: 2deg;
+  }
+  50% {
+    rotate: 0deg;
+  }
+  100% {
+    rotate: -2deg;
+  }
+}
+
 //Partials
 @import "style/general";
 @import "style/startMenu";
 @import "style/options";
 @import "style/board";
+@import "style/gameMode";
